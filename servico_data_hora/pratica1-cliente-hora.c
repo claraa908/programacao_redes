@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-int main(){
+int main(int argc, char* argv[]){
     struct sockaddr_in info;
     int socket_entrada;
     int tamanho_estrutura_socket;
@@ -20,14 +20,17 @@ int main(){
     info.sin_family = AF_INET;
     info.sin_port = htons(7658);
 
-    printf("Digite o endereco IP do servidor que deseja se conectar: \n");
-    scanf("%s", endereco);
-    inet_aton(endereco, &info.sin_addr);
+    if(argc == 1){
+        printf("Digite o endereco IP do servidor que deseja se conectar: \n");
+        scanf("%s", endereco);
+        inet_aton(endereco, &info.sin_addr);
+    }else if(argc == 2){
+        inet_aton(argv[1], &info.sin_addr);
+    }
 
     if(connect(socket_entrada, (struct sockaddr*)& info, sizeof(info)) < 0){
         printf("Eita!\n"); exit(1);
     }
-    
 
     read(socket_entrada, buffer, 24);
     printf("Mensagem do servidor: %s\n", buffer);
